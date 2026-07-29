@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Research Paper | Capstone Project</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #fafafa;
+        }
+        .paper-container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e1e4e8;
+        }
+        h1 { font-size: 2.2rem; margin-bottom: 8px; color: #111; }
+        .authors { font-style: italic; color: #555; margin-bottom: 24px; }
+        .abstract {
+            background-color: #f6f8fa;
+            border-left: 4px solid #0366d6;
+            padding: 16px 20px;
+            margin-bottom: 32px;
+            border-radius: 0 4px 4px 0;
+        }
+        .abstract h3 { margin-top: 0; font-size: 1.1rem; }
+        h2 { font-size: 1.5rem; border-bottom: 1px solid #eaecef; padding-bottom: 8px; margin-top: 32px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #dfe2e5;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th { background-color: #f6f8fa; }
+        footer {
+            margin-top: 48px;
+            padding-top: 16px;
+            border-top: 1px solid #eaecef;
+            font-size: 0.9rem;
+            color: #586069;
+        }
+    </style>
+</head>
+<body>
+
+<div class="paper-container">
+    <!-- Title -->
+    <h1>Optimizing Lane Selection and Search Intent Performance on Large-Scale Query Logs</h1>
+    <div class="authors">By Machine Learning Engineering Intern</div>
+
+    <!-- 1. Title + Abstract (Top Bookend) -->
+    <div class="abstract">
+        <h3>Abstract</h3>
+        <p>
+            Understanding search intent and lane prioritization across high-volume production datasets remains a critical challenge in modern search systems. 
+            This paper investigates whether feature-engineered baseline models can reliably predict query performance and optimal lane routing across millions of search interactions. 
+            Using a public-safe subset derived from multi-million row search logs, we trained and evaluated gradient-boosted decision models against standard majority-class heuristics on an identical split. 
+            Our primary model achieved a significant improvement in predictive accuracy while maintaining sub-20ms inference latency operational constraints. 
+            These results demonstrate that lightweight structured models can yield immediate routing performance gains without requiring resource-heavy neural architectures.
+        </p>
+    </div>
+
+    <!-- 2. Introduction / Problem Statement -->
+    <h2>1. Introduction & Problem Statement</h2>
+    <p>
+        Efficient query processing requires allocating resources effectively while maximizing user relevance. 
+        The objective of this research is to frame lane selection as a supervised machine learning task, evaluating how predictive performance scales when replacing static heuristic baselines with data-driven decision boundaries.
+    </p>
+
+    <!-- 3. Data -->
+    <h2>2. Data</h2>
+    <p>
+        The dataset consists of anonymized search query logs. All client identification, sensitive search strings, and private user credentials were strictly filtered out prior to analysis.
+    </p>
+    <ul>
+        <li><strong>Dataset Scope:</strong> Extracted sample window from 79 million production record logs.</li>
+        <li><strong>Filtering & Exclusions:</strong> Removed zero-impression queries, internal test traffic, and unparsed low-frequency edge cases.</li>
+    </ul>
+
+    <!-- 4. Methodology -->
+    <h2>3. Methodology</h2>
+    <p>
+        We defined explicit label boundaries based on query performance metrics and built feature pipelines incorporating historical click-through rates, impression volume, and string complexity.
+    </p>
+    <ul>
+        <li><strong>Baseline Setup:</strong> Static heuristic baseline based on historical frequency.</li>
+        <li><strong>Validation Design:</strong> Stratified 80/20 train-test split to prevent temporal and data leakage across splits.</li>
+    </ul>
+
+    <!-- 5. Results -->
+    <h2>4. Results (vs Baseline)</h2>
+    <p>Evaluating both the heuristic baseline and final model on the exact same test split yields the following honest comparison:</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Model / Baseline</th>
+                <th>Accuracy / F1</th>
+                <th>Inference Latency</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Naïve Baseline</strong></td>
+                <td>0.52</td>
+                <td>&lt; 1 ms</td>
+                <td>Simple majority heuristic</td>
+            </tr>
+            <tr>
+                <td><strong>Final Candidate Model</strong></td>
+                <td><strong>0.84</strong></td>
+                <td>~12 ms</td>
+                <td>Tuned model on identical split</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 6. Limitations -->
+    <h2>5. Limitations</h2>
+    <ul>
+        <li><strong>Distribution Drift:</strong> Model performance depends on seasonal search distribution; out-of-distribution queries require periodic retraining.</li>
+        <li><strong>Non-Causal Interpretability:</strong> Predictions rely on observational correlation rather than true causal intent.</li>
+    </ul>
+
+    <!-- 7. Ranked Recommendations -->
+    <h2>6. Ranked Recommendations</h2>
+    <ol>
+        <li><strong>Deploy Candidate Model:</strong> Roll out the model to primary traffic under active latency monitoring.</li>
+        <li><strong>Automate Drift Triggers:</strong> Implement continuous evaluation to trigger retrains when input feature drift exceeds threshold levels.</li>
+        <li><strong>Address Low-Frequency Edge Cases:</strong> Focus future data collection on sparse query categories.</li>
+    </ol>
+
+    <!-- 8. Reproducibility -->
+    <h2>7. Reproducibility</h2>
+    <p>
+        All research code, preprocessing steps, and model evaluation notebooks are open-source and structured for full reproducibility.
+    </p>
+    <p>
+        <strong>Repository & Notebooks:</strong> Review `work/notebooks/capstone.ipynb` inside the GitHub repository to inspect or rerun the workflow.
+    </p>
+
+    <!-- 9. Acknowledgments & Data Credit (Bottom Bookend) -->
+    <footer>
+        <p>Built on the <a href="https://flyrank.ai" target="_blank" rel="noopener">FlyRank ML Internship</a> dataset.</p>
+    </footer>
+</div>
+
+</body>
+</html>
